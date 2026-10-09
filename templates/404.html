@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Not found — Patra{% endblock %}
+
+{% block content %}
+<section class="wrap lost">
+  <p class="eyebrow mono">404</p>
+  <h1 class="display display--xl ink">This row is <em>empty.</em></h1>
+  <p class="body-lg">The page you were looking for isn't in this field.</p>
+  <div class="btn-row">
+    <a class="btn btn--solid" href="{{ url_for('home') }}">Back to home</a>
+    <a class="btn btn--outline" href="{{ url_for('diseases') }}">Disease library</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Disease library — Patra{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap page-head__inner">
+    <div>
+      <p class="eyebrow">Disease library · {{ diseases | length }} conditions</p>
+      <h1 class="display display--lg ink">What's on <em>the leaf?</em></h1>
+    </div>
+    <p class="body-lg page-head__aside">Every class the scanner can return, with the symptoms to check by eye, what drives it, and how it is managed in Indian field conditions.</p>
+  </div>
+</section>
+
+<section class="wrap library" data-library>
+  <div class="toolbar">
+    <div class="chips" role="group" aria-label="Filter by type">
+      <button class="chip is-on" type="button" data-filter="all" aria-pressed="true">All</button>
+      {% for t in types %}
+      <button class="chip" type="button" data-filter="{{ t }}" aria-pressed="false">{{ t }}</button>
+      {% endfor %}
+    </div>
+    <label class="search">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5" stroke-linecap="round"/></svg>
+      <input type="search" placeholder="Search crop, symptom or pathogen" aria-label="Search diseases" data-search>
+    </label>
+  </div>
+
+  <div class="cards">
+    {% for d in diseases %}
+    <a class="dcard {% if loop.first %}dcard--wide{% endif %}" href="{{ url_for('disease_detail', slug=d.slug) }}"
+       data-type="{{ d.type }}" data-text="{{ (d.name ~ ' ' ~ d.pathogen ~ ' ' ~ d.crops|join(' ') ~ ' ' ~ d.summary ~ ' ' ~ d.symptoms|join(' ')) | lower }}">
+      <div class="dcard__top">
+        <span class="tag tag--{{ d.type | lower | replace(' / ', '-') }}">{{ d.type }}</span>
+        <span class="mono dcard__spread">Spread · {{ d.spread }}</span>
+      </div>
+      <h2 class="dcard__name">{{ d.name }}</h2>
+      <p class="dcard__path"><i>{{ d.pathogen }}</i></p>
+      <p class="dcard__sum">{{ d.summary }}</p>
+      <div class="dcard__foot">
+        <span class="mono">{{ d.crops | join(' · ') }}</span>
+        <span class="dcard__arrow" aria-hidden="true">→</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <p class="empty" data-empty hidden>No condition matches that search. Try a crop name such as “tomato” or a symptom such as “yellow”.</p>
+</section>
+{% endblock %}

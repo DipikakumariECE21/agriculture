@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}Patra — Every harvest begins with a single leaf{% endblock %}
+{% block head %}
+<link rel="preload" as="image" href="{{ url_for('static', filename='frames/0001.webp') }}">
+{% endblock %}
+
+{% block content %}
+<section class="seq" data-seq data-frames="{{ frame_count }}" data-src="{{ url_for('static', filename='frames/') }}" aria-label="Scroll-driven film: from the field down to a single diseased leaf">
+  <div class="seq__sticky">
+    <canvas class="seq__canvas" data-seq-canvas aria-hidden="true"></canvas>
+    <div class="seq__shade" data-seq-shade></div>
+
+    <div class="seq__chapter seq__chapter--intro is-active" data-chapter data-from="0" data-to="0.14">
+      <p class="eyebrow eyebrow--light">Crop Disease Detection System · AI/ML project</p>
+      <h1 class="display">Every harvest begins<br>with a <em>single leaf.</em></h1>
+      <p class="lede">Patra screens crop leaves for disease from one photograph — so problems are caught in the row, not at harvest.</p>
+      <div class="seq__cue"><span class="seq__cue-line"></span>Scroll to walk the field</div>
+    </div>
+
+    <div class="seq__chapter seq__chapter--right" data-chapter data-from="0.2" data-to="0.4">
+      <p class="eyebrow eyebrow--light">01 · The field</p>
+      <h2 class="display display--md">Disease travels <em>quietly.</em></h2>
+      <p class="lede">Fungal spores and bacteria move leaf to leaf on wind and rain splash, long before a field looks sick from the road.</p>
+    </div>
+
+    <div class="seq__chapter seq__chapter--center" data-chapter data-from="0.46" data-to="0.62">
+      <p class="eyebrow eyebrow--light">02 · The row</p>
+      <h2 class="display display--md">So we looked <em>closer.</em></h2>
+    </div>
+
+    <div class="seq__chapter seq__chapter--scan" data-chapter data-from="0.7" data-to="0.9">
+      <p class="eyebrow eyebrow--light">03 · The leaf</p>
+      <h2 class="display display--md">Patra reads<br>the <em>leaf.</em></h2>
+      <dl class="hud" aria-label="Illustrative scan readout">
+        <div><dt>Leaf tissue</dt><dd data-hud="72.4">0.0<span>%</span></dd></div>
+        <div><dt>Lesion area</dt><dd data-hud="6.8">0.0<span>%</span></dd></div>
+        <div><dt>Spots found</dt><dd data-hud="14" data-int>0</dd></div>
+        <div class="hud__result"><dt>Likely class</dt><dd>Leaf spot <span class="hud__conf" data-hud="81" data-int>0</span><span>%</span></dd></div>
+      </dl>
+    </div>
+
+    <div class="seq__chapter seq__chapter--end" data-chapter data-from="0.93" data-to="1.01">
+      <h2 class="display display--md">One photo.<br>A first opinion in <em>under a second.</em></h2>
+      <div class="btn-row">
+        <a class="btn btn--light" href="{{ url_for('detect') }}">Scan a leaf <span aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost-light" href="{{ url_for('how_it_works') }}">How it works</a>
+      </div>
+    </div>
+
+    <div class="seq__meta" aria-hidden="true">
+      <div class="seq__rail"><span data-seq-bar></span></div>
+      <div class="seq__counter mono"><span data-seq-frame>001</span> / {{ '%03d' % frame_count }}</div>
+      <div class="seq__loader mono" data-seq-loader>Loading film <span data-seq-pct>0</span>%</div>
+    </div>
+  </div>
+</section>
+
+<section class="section problem">
+  <div class="wrap problem__grid">
+    <div>
+      <p class="eyebrow">The problem</p>
+      <h2 class="display display--lg ink">Farmers don't lack effort. They lack an <em>early second opinion.</em></h2>
+      <p class="body-lg">Disease is usually identified by eye. Experienced growers spot a lot — but inspection is slow, subjective, and expert help is often a long ride away. Late or wrong identification leads to delayed treatment, wasted pesticide and infection that spreads row by row.</p>
+    </div>
+    <dl class="figures">
+      <div class="figure">
+        <dt class="figure__num">40<span>%</span></dt>
+        <dd>of global crop production is lost to plant pests and diseases each year. <cite>FAO</cite></dd>
+      </div>
+      <div class="figure">
+        <dt class="figure__num">$220<span>bn</span></dt>
+        <dd>is what plant diseases cost the global economy annually. <cite>FAO</cite></dd>
+      </div>
+      <div class="figure">
+        <dt class="figure__num">1<span>phone</span></dt>
+        <dd>is all the hardware a farmer needs to run a first screen with Patra.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="section section--dark pipeline">
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="eyebrow eyebrow--light">The pipeline</p>
+        <h2 class="display display--lg">From photograph to first opinion in <em>six steps.</em></h2>
+      </div>
+      <a class="link-arrow link-arrow--light" href="{{ url_for('how_it_works') }}">Full methodology <span aria-hidden="true">→</span></a>
+    </div>
+    <ol class="rail">
+      {% for step in pipeline %}
+      <li class="rail__step" style="--i: {{ loop.index0 }}">
+        <span class="rail__id mono">{{ step.id }}</span>
+        <h3>{{ step.name }}</h3>
+        <p>{{ step.detail }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section sees">
+  <div class="wrap sees__grid">
+    <figure class="sees__figure">
+      <img src="{{ url_for('static', filename='img/leaf-spots.jpg') }}" alt="Close-up of a soybean leaf with brown, yellow-haloed lesions and water droplets" loading="lazy" width="1280" height="720">
+      <span class="pin" style="--x: 53%; --y: 44%"><span class="pin__dot"></span><span class="pin__label mono">Lesion · necrotic centre</span></span>
+      <span class="pin pin--left" style="--x: 11%; --y: 50%"><span class="pin__dot"></span><span class="pin__label mono">Chlorotic halo</span></span>
+      <span class="pin" style="--x: 68%; --y: 14%"><span class="pin__dot"></span><span class="pin__label mono">Merged spots</span></span>
+    </figure>
+    <div class="sees__copy">
+      <p class="eyebrow">What the model sees</p>
+      <h2 class="display display--md ink">Not a picture. A set of <em>measurements.</em></h2>
+      <ul class="spec">
+        <li><span class="mono">Segmentation</span><p>Leaf tissue is separated from soil, sky and hands using HSV colour thresholds and a smoothed mask.</p></li>
+        <li><span class="mono">Lesion map</span><p>Brown, rust-orange, yellow, white and necrotic pixels inside the leaf are isolated and measured.</p></li>
+        <li><span class="mono">Spot statistics</span><p>Connected-component labelling counts spots and sizes the largest — small-and-many reads differently from large-and-few.</p></li>
+        <li><span class="mono">Quality gate</span><p>Blur and exposure are checked first. A bad photo gets a warning, not a confident wrong answer.</p></li>
+      </ul>
+      <a class="btn btn--solid" href="{{ url_for('detect') }}">Try it on your own photo <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section library-preview">
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="eyebrow">Disease library</p>
+        <h2 class="display display--lg ink">Know what you're <em>looking at.</em></h2>
+      </div>
+      <a class="link-arrow" href="{{ url_for('diseases') }}">All conditions <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="rows" role="list">
+      {% for d in diseases %}
+      <a class="row" role="listitem" href="{{ url_for('disease_detail', slug=d.slug) }}">
+        <span class="row__name">{{ d.name }}</span>
+        <span class="row__path"><i>{{ d.pathogen }}</i></span>
+        <span class="row__crops">{{ d.crops | join(', ') }}</span>
+        <span class="tag tag--{{ d.type | lower | replace(' / ', '-') }}">{{ d.type }}</span>
+        <span class="row__arrow" aria-hidden="true">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <img class="closing__bg" src="{{ url_for('static', filename='img/field-dawn.jpg') }}" alt="" loading="lazy">
+  <div class="wrap closing__inner">
+    <h2 class="display display--xl">Walk the field.<br><em>Scan the leaf.</em></h2>
+    <div class="btn-row">
+      <a class="btn btn--light" href="{{ url_for('detect') }}">Open the scanner <span aria-hidden="true">→</span></a>
+      <a class="btn btn--ghost-light" href="{{ url_for('project') }}">Read the project report</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sequence.js') }}" defer></script>
+{% endblock %}

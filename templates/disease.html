@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ d.name }} — Patra disease library{% endblock %}
+{% block description %}{{ d.summary }}{% endblock %}
+
+{% block content %}
+<article class="detail">
+  <header class="page-head">
+    <div class="wrap">
+      <nav class="crumbs mono" aria-label="Breadcrumb">
+        <a href="{{ url_for('diseases') }}">Disease library</a><span aria-hidden="true">/</span><span>{{ d.name }}</span>
+      </nav>
+      <div class="page-head__inner">
+        <div>
+          <span class="tag tag--{{ d.type | lower | replace(' / ', '-') }}">{{ d.type }}</span>
+          <h1 class="display display--lg ink">{{ d.name }}</h1>
+          <p class="detail__path"><i>{{ d.pathogen }}</i></p>
+        </div>
+        <p class="body-lg page-head__aside">{{ d.summary }}</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap detail__grid">
+    <aside class="facts">
+      <dl>
+        <div><dt class="eyebrow">Crops</dt><dd>{{ d.crops | join(', ') }}</dd></div>
+        <div><dt class="eyebrow">Favoured by</dt><dd>{{ d.season }}</dd></div>
+        <div><dt class="eyebrow">Spread rate</dt><dd>{{ d.spread }}</dd></div>
+      </dl>
+      <a class="btn btn--solid" href="{{ url_for('detect') }}">Scan a leaf <span aria-hidden="true">→</span></a>
+    </aside>
+
+    <div class="detail__body">
+      <section>
+        <h2 class="h-sec">Symptoms to look for</h2>
+        <ol class="numbered">
+          {% for s in d.symptoms %}<li>{{ s }}</li>{% endfor %}
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="h-sec">{% if d.type == 'Healthy' %}What keeps it healthy{% else %}Causes &amp; spread{% endif %}</h2>
+        <ul class="bullets">
+          {% for c in d.causes %}<li>{{ c }}</li>{% endfor %}
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="h-sec">Management</h2>
+        <div class="mgmt">
+          {% for group, items in d.management.items() %}
+          <div class="mgmt__col">
+            <h3 class="mono">{{ group }}</h3>
+            <ul>{% for i in items %}<li>{{ i }}</li>{% endfor %}</ul>
+          </div>
+          {% endfor %}
+        </div>
+        {% if d.type != 'Healthy' %}
+        <p class="note">Chemical controls are listed for reference only. Always follow the product label and the advice of your Krishi Vigyan Kendra or state agriculture department.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+
+  <a class="next" href="{{ url_for('disease_detail', slug=nxt.slug) }}">
+    <div class="wrap next__inner">
+      <span class="eyebrow">Next condition</span>
+      <span class="display display--md ink">{{ nxt.name }} <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>
+{% endblock %}

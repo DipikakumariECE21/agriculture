@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Project — Patra{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap page-head__inner">
+    <div>
+      <p class="eyebrow">Academic project report</p>
+      <h1 class="display display--lg ink">{{ project.title }}</h1>
+    </div>
+    <dl class="credits">
+      <div><dt class="eyebrow">Submitted by</dt><dd>{{ project.student }}</dd></div>
+      <div><dt class="eyebrow">Supervisor</dt><dd>{{ project.supervisor }}</dd></div>
+      <div><dt class="eyebrow">Department</dt><dd>{{ project.department }}</dd></div>
+      <div><dt class="eyebrow">Institute</dt><dd>{{ project.institute }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="wrap abstract">
+  <figure class="abstract__img">
+    <img src="{{ url_for('static', filename='img/leaf-macro.jpg') }}" alt="Dew-covered crop leaf showing early brown lesions" loading="lazy">
+  </figure>
+  <div class="abstract__copy">
+    <p class="eyebrow">Abstract</p>
+    <p class="body-lg">Crop diseases are a major cause of reduced agricultural productivity and economic loss. This project proposes a technology-assisted system that identifies visible crop diseases from images of plant leaves: capture an image, preprocess it, extract visual features and classify the leaf as healthy or affected by a particular disease.</p>
+    <p class="body">It shows how image processing, artificial intelligence, electronics and communication technologies combine to support agriculture — reducing dependence on visual inspection alone, giving faster preliminary detection and encouraging timely crop management.</p>
+    <a class="btn btn--solid" href="{{ url_for('static', filename=project.report_file) }}" download>Download full report <span class="mono">.docx</span></a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap objectives">
+    <div>
+      <p class="eyebrow">Objectives</p>
+      <h2 class="display display--md ink">What the project <em>set out to do.</em></h2>
+    </div>
+    <ol class="numbered numbered--lg">
+      <li>Develop a prototype for detecting visible crop diseases from leaf images.</li>
+      <li>Understand image acquisition and preprocessing techniques.</li>
+      <li>Apply machine-learning and deep-learning concepts to agricultural images.</li>
+      <li>Provide a simple, understandable disease prediction output.</li>
+      <li>Reduce the time required for preliminary visual screening.</li>
+      <li>Demonstrate electronics, computing and communication technologies in agriculture.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap ledger">
+    <div class="ledger__col">
+      <h2 class="h-sec">Advantages</h2>
+      <ul class="bullets">
+        <li>Quick preliminary screening</li>
+        <li>Consistent, computer-based classification</li>
+        <li>Scalable to additional crops and diseases</li>
+        <li>Integrates with mobile and IoT platforms</li>
+        <li>Supports remote agricultural assistance</li>
+      </ul>
+    </div>
+    <div class="ledger__col">
+      <h2 class="h-sec">Limitations</h2>
+      <p class="body">Accuracy depends on dataset quality, disease coverage and image conditions. A model trained on laboratory images may not perform as well on complex field photos, and similar-looking diseases are hard to tell apart. Patra is therefore a <strong>decision-support and screening tool</strong>, not a final agricultural diagnosis.</p>
+    </div>
+    <div class="ledger__col">
+      <h2 class="h-sec">Applications</h2>
+      <ul class="bullets">
+        <li>Smart agriculture and precision farming</li>
+        <li>Mobile crop-health assistance</li>
+        <li>Agricultural research and education</li>
+        <li>Nursery and greenhouse monitoring</li>
+        <li>Remote advisory platforms</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow">Future scope</p>
+      <h2 class="display display--md ink">Where it <em>goes next.</em></h2>
+      <p class="body">With enough real-world data the system can move from a classroom prototype to field-level deployment.</p>
+    </div>
+    <ul class="roadmap">
+      {% for f in future %}
+      <li><span class="mono">{{ '%02d' % loop.index }}</span>{{ f }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow">Acknowledgement</p>
+      <p class="quote">“Sincere gratitude to my project supervisor, Rashid Sir, for his valuable guidance, encouragement and continuous support during the development of this project.”</p>
+      <p class="mono">— {{ project.student }}</p>
+    </div>
+    <div>
+      <p class="eyebrow">References</p>
+      <ol class="refs">
+        <li>R. C. Gonzalez and R. E. Woods, <i>Digital Image Processing</i>, Pearson.</li>
+        <li>I. Goodfellow, Y. Bengio and A. Courville, <i>Deep Learning</i>, MIT Press.</li>
+        <li>OpenCV Documentation — image processing and computer vision.</li>
+        <li>TensorFlow / Keras Documentation — machine learning and CNN concepts.</li>
+        <li>Public agricultural leaf-image datasets used for academic experimentation.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+{% endblock %}

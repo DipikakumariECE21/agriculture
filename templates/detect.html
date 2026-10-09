@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Detect — Patra{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap page-head__inner">
+    <div>
+      <p class="eyebrow">Scanner</p>
+      <h1 class="display display--lg ink">Scan a <em>leaf.</em></h1>
+    </div>
+    <p class="body-lg page-head__aside">Upload or photograph one leaf. The Python engine segments it, maps lesions and scores seven classes. Results are a preliminary screen — confirm serious cases with your local agriculture officer.</p>
+  </div>
+</section>
+
+<section class="wrap scanner" data-scanner data-endpoint="{{ url_for('api_analyze') }}">
+  <div class="scanner__input">
+    <label class="drop" data-drop>
+      <input type="file" accept="image/jpeg,image/png,image/webp" data-file hidden>
+      <span class="drop__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      </span>
+      <span class="drop__title">Drop a leaf photo here</span>
+      <span class="drop__hint">or <u>browse files</u> · on a phone you can use the camera · paste works too</span>
+      <span class="drop__meta mono">JPG · PNG · WebP — up to 10 MB</span>
+    </label>
+
+    <div class="samples">
+      <p class="eyebrow">No photo handy? Try a sample</p>
+      <div class="samples__list">
+        {% for s in samples %}
+        <button class="sample" type="button" data-sample="{{ url_for('static', filename='samples/' ~ s.file) }}" data-name="{{ s.file }}">
+          <img src="{{ url_for('static', filename='samples/' ~ s.file) }}" alt="" loading="lazy">
+          <span>{{ s.label }}</span>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="tips">
+      <p class="eyebrow">For a reliable result</p>
+      <ol>
+        <li><strong>One leaf, filling the frame.</strong> Overlapping leaves confuse segmentation.</li>
+        <li><strong>Daylight, no glare.</strong> Shade or harsh sun both shift colours.</li>
+        <li><strong>Hold steady.</strong> Tap to focus — blurred photos are flagged.</li>
+        <li><strong>Check the underside too.</strong> Rust and mildew often start there.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="scanner__output" aria-live="polite">
+    <div class="state state--idle is-visible" data-state="idle">
+      <div class="state__frame">
+        <svg viewBox="0 0 120 120" aria-hidden="true" class="state__leaf"><path d="M20 100C20 52 52 20 100 20c0 48-32 80-80 80Z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M20 100 70 50M44 76h18M56 64V48" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span class="corner corner--tl"></span><span class="corner corner--tr"></span><span class="corner corner--bl"></span><span class="corner corner--br"></span>
+      </div>
+      <p class="state__title">Waiting for a leaf</p>
+      <p class="state__text">Your result appears here: a lesion map, the most likely condition, severity and what to do next.</p>
+    </div>
+
+    <div class="state state--loading" data-state="loading">
+      <div class="state__frame state__frame--img">
+        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" data-preview>
+        <span class="scanline"></span>
+      </div>
+      <ol class="steps mono" data-steps>
+        <li>Checking sharpness &amp; exposure</li>
+        <li>Converting to HSV colour space</li>
+        <li>Segmenting leaf tissue</li>
+        <li>Mapping lesions &amp; counting spots</li>
+        <li>Scoring 7 classes</li>
+      </ol>
+    </div>
+
+    <div class="state state--error" data-state="error">
+      <p class="state__title">That didn't work</p>
+      <p class="state__text" data-error>Something went wrong.</p>
+      <button class="btn btn--outline" type="button" data-reset>Try another photo</button>
+    </div>
+
+    <article class="state state--result" data-state="result">
+      <div class="compare" data-compare>
+        <img class="compare__base" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Uploaded leaf" data-r-original>
+        <div class="compare__top" data-compare-top><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Lesion map overlay" data-r-overlay></div>
+        <input class="compare__range" type="range" min="0" max="100" value="55" aria-label="Reveal lesion map" data-compare-range>
+        <span class="compare__handle" data-compare-handle></span>
+        <span class="compare__tag compare__tag--l mono">Lesion map</span>
+        <span class="compare__tag compare__tag--r mono">Original</span>
+      </div>
+      <ul class="legend mono" aria-label="Lesion map legend">
+        <li><i style="--c:#e88034"></i>Brown lesion</li>
+        <li><i style="--c:#f05428"></i>Rust</li>
+        <li><i style="--c:#d63c3c"></i>Necrotic</li>
+        <li><i style="--c:#f6ce46"></i>Chlorosis</li>
+        <li><i style="--c:#f0f0f0"></i>Powdery</li>
+      </ul>
+
+      <header class="verdict">
+        <div>
+          <p class="eyebrow" data-r-type>Result</p>
+          <h2 class="verdict__label" data-r-label>—</h2>
+          <p class="verdict__path" data-r-pathogen></p>
+        </div>
+        <div class="verdict__conf">
+          <span class="verdict__num" data-r-conf>0</span><span class="verdict__unit">%</span>
+          <span class="mono">confidence</span>
+        </div>
+      </header>
+
+      <div class="severity" data-r-sev-wrap>
+        <div class="severity__top">
+          <span class="eyebrow">Severity</span>
+          <span class="mono"><b data-r-sev-band>—</b> · <span data-r-sev>0</span>% of leaf affected</span>
+        </div>
+        <div class="severity__bar"><span data-r-sev-bar></span><i style="left:4.5%"></i><i style="left:18%"></i><i style="left:58%"></i></div>
+        <div class="severity__scale mono" aria-hidden="true"><span style="left:0">None</span><span style="left:11%">Low</span><span style="left:38%">Moderate</span><span style="left:79%">High</span></div>
+      </div>
+
+      <div class="warnings" data-r-warnings hidden></div>
+
+      <div class="result-grid">
+        <section>
+          <h3 class="eyebrow">Class probabilities</h3>
+          <ul class="probs" data-r-probs></ul>
+        </section>
+        <section>
+          <h3 class="eyebrow">Measured features</h3>
+          <dl class="feats mono" data-r-feats></dl>
+        </section>
+      </div>
+
+      <section class="advice" data-r-advice hidden>
+        <h3 class="eyebrow">What to do next</h3>
+        <p data-r-summary></p>
+        <ul data-r-steps></ul>
+        <a class="link-arrow" data-r-link href="#">Full guide <span aria-hidden="true">→</span></a>
+      </section>
+
+      <footer class="result-foot">
+        <span class="mono" data-r-id></span>
+        <div class="btn-row">
+          <button class="btn btn--outline btn--sm" type="button" data-reset>Scan another</button>
+          <a class="btn btn--ghost btn--sm" href="{{ url_for('history') }}">Open scan log</a>
+        </div>
+      </footer>
+    </article>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/detect.js') }}" defer></script>
+{% endblock %}

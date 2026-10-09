@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Scan log — Patra{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap page-head__inner">
+    <div>
+      <p class="eyebrow">Scan log</p>
+      <h1 class="display display--lg ink">Every leaf, <em>on record.</em></h1>
+    </div>
+    <p class="body-lg page-head__aside">Each scan is stored in a local SQLite database so you can track a field over time. Nothing leaves this machine.</p>
+  </div>
+</section>
+
+<section class="wrap log">
+  <dl class="stats">
+    <div><dt class="eyebrow">Total scans</dt><dd>{{ stats.total }}</dd></div>
+    <div><dt class="eyebrow">Healthy</dt><dd>{{ stats.healthy }}</dd></div>
+    <div><dt class="eyebrow">Disease flagged</dt><dd>{{ stats.diseased }}</dd></div>
+    <div><dt class="eyebrow">Avg. confidence</dt><dd>{% if stats.avg_conf is not none %}{{ stats.avg_conf }}<small>%</small>{% else %}—{% endif %}</dd></div>
+  </dl>
+
+  {% if scans %}
+  <div class="table-wrap">
+    <table class="table table--log">
+      <thead>
+        <tr><th scope="col">Leaf</th><th scope="col">Result</th><th scope="col">Confidence</th><th scope="col">Severity</th><th scope="col">Spots</th><th scope="col">Scanned</th></tr>
+      </thead>
+      <tbody>
+        {% for s in scans %}
+        <tr>
+          <td><img class="thumb" src="{{ s.thumbnail }}" alt="" width="44" height="44"><span class="mono log__file">{{ s.filename }}</span></td>
+          <td>
+            {% if s.slug %}<a href="{{ url_for('disease_detail', slug=s.slug) }}" class="log__label">{{ s.label }}</a>
+            {% else %}<span class="log__label log__label--muted">{{ s.label }}</span>{% endif %}
+          </td>
+          <td class="mono">{{ s.confidence }}%</td>
+          <td><span class="sev sev--{{ s.severity_band | lower }}">{{ s.severity_band }}</span></td>
+          <td class="mono">{{ s.features.spot_count }}</td>
+          <td class="mono">{{ s.created_at | when }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <form method="post" action="{{ url_for('clear_history') }}" class="log__clear" data-confirm="Clear all {{ stats.total }} scans from the log?">
+    <button class="btn btn--ghost btn--sm" type="submit">Clear log</button>
+  </form>
+  {% else %}
+  <div class="empty-log">
+    <p class="state__title">No scans yet</p>
+    <p class="state__text">Scan your first leaf and it will appear here with its result, severity and timestamp.</p>
+    <a class="btn btn--solid" href="{{ url_for('detect') }}">Scan a leaf <span aria-hidden="true">→</span></a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

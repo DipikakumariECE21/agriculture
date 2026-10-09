@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}How it works — Patra{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap page-head__inner">
+    <div>
+      <p class="eyebrow">How it works</p>
+      <h1 class="display display--lg ink">Camera in, <em>decision support</em> out.</h1>
+    </div>
+    <p class="body-lg page-head__aside">The system follows the architecture laid out in the project report: input, preprocessing, a trained classifier, and a result the farmer can act on. Here is every stage, and the code that runs it.</p>
+  </div>
+</section>
+
+<section class="wrap arch" aria-labelledby="arch-h">
+  <h2 id="arch-h" class="h-sec">System architecture</h2>
+  <ol class="flow">
+    <li><span class="mono">Input</span><b>Camera / smartphone</b></li>
+    <li><span class="mono">Stage 1</span><b>Image preprocessing</b></li>
+    <li class="flow__core"><span class="mono">Stage 2</span><b>Trained ML / CNN model</b></li>
+    <li><span class="mono">Stage 3</span><b>Disease classification</b></li>
+    <li><span class="mono">Output</span><b>Result display</b></li>
+    <li class="flow__opt"><span class="mono">Optional</span><b>Advisory &amp; communication</b></li>
+  </ol>
+  <div class="deploy">
+    <div><h3 class="mono">Embedded</h3><p>Camera module on a Raspberry Pi running a lightweight model in the field.</p></div>
+    <div><h3 class="mono">Mobile</h3><p>Smartphone camera with an optimised on-device model for offline villages.</p></div>
+    <div><h3 class="mono">Cloud / web</h3><p>Image is sent to a server for processing — what this Flask app does today.</p></div>
+  </div>
+</section>
+
+<section class="section section--dark">
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="eyebrow eyebrow--light">Inside the scanner</p>
+        <h2 class="display display--lg">What happens in the <em>500 ms</em> after you upload.</h2>
+      </div>
+    </div>
+    <ol class="rail rail--stack">
+      {% for step in pipeline %}
+      <li class="rail__step" style="--i: {{ loop.index0 }}">
+        <span class="rail__id mono">{{ step.id }}</span>
+        <h3>{{ step.name }}</h3>
+        <p>{{ step.detail }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+    <pre class="code" aria-label="Excerpt from analyzer.py"><code><span class="c"># analyzer.py — leaf segmentation and lesion isolation</span>
+hsv = np.asarray(img.convert(<span class="s">"HSV"</span>)).astype(np.float32)
+green  = (h &gt;= <span class="n">62</span>) &amp; (h &lt;= <span class="n">170</span>) &amp; (s &gt;= <span class="n">40</span>) &amp; (v &gt;= <span class="n">35</span>)
+region = (_blur_mask(green, radius) &gt; <span class="n">0.38</span>) | green      <span class="c"># leaf + holes</span>
+lesion = (brown | rusty | yellow | white | dark) &amp; region &amp; ~green
+areas  = _components(spot_mask)                         <span class="c"># spot count &amp; size</span>
+probs  = _softmax(scores)                               <span class="c"># 7 classes</span></code></pre>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow">Methodology</p>
+      <h2 class="display display--md ink">Seven steps from <em>dataset</em> to <em>decision.</em></h2>
+      <p class="body">The current engine uses explainable colour and texture features. The same methodology carries over unchanged when the classifier is swapped for a CNN trained on a labelled dataset such as PlantVillage.</p>
+    </div>
+    <ol class="method">
+      {% for name, text in methodology %}
+      <li><span class="mono">Step {{ loop.index }}</span><h3>{{ name }}</h3><p>{{ text }}</p></li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <h2 class="h-sec">Requirements</h2>
+    <div class="req">
+      <table class="table">
+        <caption class="mono">Hardware</caption>
+        <tbody>{% for n, t in hardware %}<tr><th scope="row">{{ n }}</th><td>{{ t }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <table class="table">
+        <caption class="mono">Software</caption>
+        <tbody>{% for n, t in software %}<tr><th scope="row">{{ n }}</th><td>{{ t }}</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow">Testing</p>
+      <h2 class="display display--md ink">How we judge it.</h2>
+      <p class="body">Performance is measured with accuracy, precision, recall, F1-score and a confusion matrix on images the model has never seen. The interface is tested against four behaviours:</p>
+      <ul class="metrics mono">
+        <li><b>Precision</b> of the scans flagged as a disease, how many really were</li>
+        <li><b>Recall</b> of the diseased leaves, how many were caught</li>
+        <li><b>F1</b> the balance of the two</li>
+      </ul>
+    </div>
+    <table class="table table--cases">
+      <thead><tr><th scope="col">Input</th><th scope="col">Expected behaviour</th></tr></thead>
+      <tbody>
+        {% for inp, exp, kind in test_cases %}
+        <tr><td>{{ inp }}</td><td><span class="dot dot--{{ kind }}"></span>{{ exp }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

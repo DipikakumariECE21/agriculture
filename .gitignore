@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+instance/
+.claude/
+*.zip
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.impeccable/
