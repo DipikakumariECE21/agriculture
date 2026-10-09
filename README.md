@@ -15,6 +15,17 @@ python app.py
 
 Open http://localhost:5000
 
+## Deploy (Render, free)
+
+Netlify only hosts static files, so it can't run this Flask app. Use Render instead:
+
+1. Sign in at https://render.com with GitHub.
+2. **New → Blueprint**, pick this repository. Render reads `render.yaml` and deploys.
+3. The site goes live at `https://patra-crop-disease.onrender.com` (or similar).
+
+The free plan sleeps after 15 minutes without visitors; the first visit after that takes ~30 s.
+The scan log starts empty after every redeploy.
+
 ## Pages
 
 | Route | What it does |
@@ -46,5 +57,6 @@ The feature pipeline is the baseline a CNN (e.g. trained on PlantVillage) can re
 map across all frames, inverting the blend, then inpainting the residual edge.
 
 ```bash
+pip install opencv-python-headless
 python scripts/prepare_frames.py path/to/extracted_frames --out static
 ```
